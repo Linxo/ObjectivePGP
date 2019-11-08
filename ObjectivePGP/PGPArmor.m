@@ -91,12 +91,12 @@ NS_ASSUME_NONNULL_BEGIN
     [armoredMessage appendString:@"\n"];
 
     // - The ASCII-Armored data
-    NSString *radix64 = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithCarriageReturn];
+    NSString *radix64 = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
     [armoredMessage appendString:radix64];
     [armoredMessage appendString:@"\n"];
 
     // - An Armor Checksum
-    UInt32 checksum = [data pgp_CRC24];
+    UInt32 checksum = [data pgp_SHA1];
     UInt8 c[3]; // 24 bit
     c[0] = (UInt8)(checksum >> 16);
     c[1] = (UInt8)(checksum >> 8);
@@ -104,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     NSData *checksumData = [NSData dataWithBytes:&c length:sizeof(c)];
     [armoredMessage appendString:@"="];
-    [armoredMessage appendString:[checksumData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithCarriageReturn]];
+    [armoredMessage appendString:[checksumData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed]];
     [armoredMessage appendString:@"\n"];
 
     // - The Armor Tail, which depends on the Armor Header Line
